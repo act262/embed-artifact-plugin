@@ -30,10 +30,10 @@ bintray {
     pkg {
         repo = 'maven'
         name = artifactName
-        desc = 'The plugin can use multiple AndroidSourceSet'
+        desc = 'The plugin merge multiple jar/aar into one'
         licenses = ['Apache-2.0']
-        websiteUrl = 'https://github.com/act262/PinModePlugin'
-        vcsUrl = 'https://github.com/act262/PinModePlugin'
+        websiteUrl = 'https://github.com/act262/embed-artifact-plugin'
+        vcsUrl = 'https://github.com/act262/embed-artifact-plugin'
 
         version {
             name = project.version

@@ -1,0 +1,45 @@
+apply plugin: 'com.android.library'
+
+// apply embed plugin
+apply plugin: 'com.jfz.plugin.embed-artifact'
+
+android {
+    compileSdkVersion 28
+
+    defaultConfig {
+        minSdkVersion 17
+        targetSdkVersion 28
+        versionCode 1
+        versionName "1.0"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+}
+
+repositories {
+    // 微博
+    maven { url "https://dl.bintray.com/thelasterstar/maven/" }
+}
+
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    implementation 'com.android.support:appcompat-v7:27.0.0'
+
+    // 微博SDK aar
+//    api 'com.sina.weibo.sdk:core:4.2.7:openDefaultRelease@aar'
+
+    embed 'com.sina.weibo.sdk:core:4.2.7:openDefaultRelease@aar'
+
+    // 微信SDK jar
+//    api 'com.tencent.mm.opensdk:wechat-sdk-android-without-mta:5.1.4'
+
+    embed 'com.tencent.mm.opensdk:wechat-sdk-android-without-mta:5.1.4'
+}
