@@ -1,4 +1,4 @@
-package com.jfz.plugin
+package com.jfz.plugin.eap
 
 import com.android.build.gradle.api.LibraryVariant
 import com.android.build.gradle.tasks.InvokeManifestMerger
