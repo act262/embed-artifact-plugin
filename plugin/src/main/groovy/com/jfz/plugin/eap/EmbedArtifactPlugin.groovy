@@ -7,6 +7,7 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.ProjectConfigurationException
 import org.gradle.api.artifacts.Configuration
+import org.gradle.api.artifacts.ModuleVersionIdentifier
 import org.gradle.api.artifacts.ResolvedArtifact
 
 /**
@@ -56,63 +57,68 @@ class EmbedArtifactPlugin implements Plugin<Project> {
         for (artifact in resolvedArtifactSet) {
             def file = artifact.file
             def id = artifact.moduleVersion.id
+            def type = artifact.type
 
-            if ('aar' == artifact.type) {
-                // unzip aar
-                def root = new File(project.buildDir, "exploded-aar/${id.group}/${id.name}/${id.version}")
-                project.copy {
-                    from project.zipTree(artifact.file)
-                    into root
-                    rename('classes.jar', "${file.name}.jar")
-                }
-
-                // sourceSet
-                project.android.sourceSets.main {
-                    aidl.srcDirs "$root/aidl"
-                    jniLibs.srcDirs "$root/jni"
-                    res.srcDirs "$root/res"
-                    assets.srcDirs "$root/assets"
-                }
-
-                project.dependencies.add('implementation',
-                        project.files("${root.absolutePath}/${file.name}.jar"))
-                project.dependencies.add('implementation',
-                        project.fileTree("${root.absolutePath}/libs"))
-
-                project.android.libraryVariants.all { LibraryVariant variant ->
-                    def variantName = variant.name.capitalize()
-                    ManifestProcessorTask processManifestTask = project.tasks["process${variantName}Manifest"]
-                    File output = new File(processManifestTask.manifestOutputDirectory, "AndroidManifest.xml")
-                    def secondaryManifestFiles = Collections.singletonList(project.file("$root/AndroidManifest.xml"))
-
-                    InvokeManifestMerger manifestsMergeTask = project.tasks.create('merge' + variantName + 'Manifest', InvokeManifestMerger)
-                    manifestsMergeTask.setVariantName(variantName)
-                    manifestsMergeTask.setMainManifestFile(output)
-                    manifestsMergeTask.setSecondaryManifestFiles(secondaryManifestFiles)
-                    manifestsMergeTask.setOutputFile(output)
-
-//                    manifestsMergeTask.dependsOn processManifestTask
-                    processManifestTask.finalizedBy manifestsMergeTask
-
-                    manifestsMergeTask.onlyIf {
-                        secondaryManifestFiles.every {
-                            it.exists()
-                        }
-                    }
-                }
-
-            } else if ('jar' == artifact.type) {
-                // copy jar
-                def root = new File(project.buildDir, "exploded-jar")
-
-                project.copy {
-                    from file
-                    into root
-                }
-                project.dependencies.add('api',
-                        project.files("$root/${file.name}"))
+            if ('aar' == type) {
+                embedAar(id, file)
+            } else if ('jar' == type) {
+                embedJar(file)
             }
         }
+    }
+
+    private void embedAar(ModuleVersionIdentifier id, File file) {
+        // unzip aar into build/exploded-aar/
+        def explodedDir = new File(project.buildDir, "exploded-aar/${id.group}/${id.name}/${id.version}")
+        project.copy {
+            from project.zipTree(file)
+            into explodedDir
+            rename('classes.jar', "${file.name}.jar")
+        }
+
+        // sourceSet
+        project.android.sourceSets.main {
+            aidl.srcDirs "$explodedDir/aidl"
+            jniLibs.srcDirs "$explodedDir/jni"
+            res.srcDirs "$explodedDir/res"
+            assets.srcDirs "$explodedDir/assets"
+        }
+
+        project.dependencies.add('implementation',
+                project.files("$explodedDir/${file.name}.jar"))
+        project.dependencies.add('implementation',
+                project.fileTree("$explodedDir/libs"))
+
+        project.android.libraryVariants.all { LibraryVariant variant ->
+            def variantName = variant.name.capitalize()
+            ManifestProcessorTask processManifestTask = project.tasks["process${variantName}Manifest"]
+            def mainManifestFile = new File(processManifestTask.manifestOutputDirectory, "AndroidManifest.xml")
+            def secondaryManifestFiles = Collections.singletonList(project.file("$explodedDir/AndroidManifest.xml"))
+
+            InvokeManifestMerger manifestsMergeTask = project.tasks.create("merge${variantName}Manifest", InvokeManifestMerger)
+            manifestsMergeTask.setVariantName(variantName)
+            manifestsMergeTask.setMainManifestFile(mainManifestFile)
+            manifestsMergeTask.setSecondaryManifestFiles(secondaryManifestFiles)
+            manifestsMergeTask.setOutputFile(mainManifestFile)
+            manifestsMergeTask.onlyIf {
+                secondaryManifestFiles.every {
+                    it.exists()
+                }
+            }
+            processManifestTask.finalizedBy manifestsMergeTask
+        }
+    }
+
+    private void embedJar(File file) {
+        // copy jar into build/exploded-jar/
+        def explodedDir = new File(project.buildDir, "exploded-jar")
+
+        project.copy {
+            from file
+            into explodedDir
+        }
+        project.dependencies.add('api',
+                project.files("$explodedDir/${file.name}"))
     }
 
 }
