@@ -83,15 +83,22 @@ class EmbedArtifactPlugin implements Plugin<Project> {
                     def variantName = variant.name.capitalize()
                     ManifestProcessorTask processManifestTask = project.tasks["process${variantName}Manifest"]
                     File output = new File(processManifestTask.manifestOutputDirectory, "AndroidManifest.xml")
+                    def secondaryManifestFiles = Collections.singletonList(project.file("$root/AndroidManifest.xml"))
 
                     InvokeManifestMerger manifestsMergeTask = project.tasks.create('merge' + variantName + 'Manifest', InvokeManifestMerger)
                     manifestsMergeTask.setVariantName(variantName)
                     manifestsMergeTask.setMainManifestFile(output)
-                    manifestsMergeTask.setSecondaryManifestFiles(Collections.singletonList(project.file("$root/AndroidManifest.xml")))
+                    manifestsMergeTask.setSecondaryManifestFiles(secondaryManifestFiles)
                     manifestsMergeTask.setOutputFile(output)
 
 //                    manifestsMergeTask.dependsOn processManifestTask
                     processManifestTask.finalizedBy manifestsMergeTask
+
+                    manifestsMergeTask.onlyIf {
+                        secondaryManifestFiles.every {
+                            it.exists()
+                        }
+                    }
                 }
 
             } else if ('jar' == artifact.type) {
