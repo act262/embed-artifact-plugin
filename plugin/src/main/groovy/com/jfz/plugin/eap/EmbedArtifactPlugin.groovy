@@ -99,7 +99,7 @@ class EmbedArtifactPlugin implements Plugin<Project> {
             def mainManifestFile = new File(processManifestTask.manifestOutputDirectory, "AndroidManifest.xml")
             def secondaryManifestFiles = Collections.singletonList(project.file("$explodedDir/AndroidManifest.xml"))
 
-            InvokeManifestMerger manifestsMergeTask = project.tasks.create("merge${variantName}Manifest", InvokeManifestMerger)
+            InvokeManifestMerger manifestsMergeTask = project.tasks.create("merge${id.name.capitalize()}${variantName}Manifest", InvokeManifestMerger)
             manifestsMergeTask.setVariantName(variantName)
             manifestsMergeTask.setMainManifestFile(mainManifestFile)
             manifestsMergeTask.setSecondaryManifestFiles(secondaryManifestFiles)

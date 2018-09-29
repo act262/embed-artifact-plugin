@@ -25,6 +25,13 @@ android {
 repositories {
     // 微博
     maven { url "https://dl.bintray.com/thelasterstar/maven/" }
+
+    maven {
+        url "http://mvn.gt.igexin.com/nexus/content/repositories/releases/"
+    }
+    maven {
+        url 'https://dl.bintray.com/linkedme2016/lkme-deeplinks'
+    }
 }
 
 
@@ -35,11 +42,18 @@ dependencies {
 
     // 微博SDK aar
 //    api 'com.sina.weibo.sdk:core:4.2.7:openDefaultRelease@aar'
-
     embed 'com.sina.weibo.sdk:core:4.2.7:openDefaultRelease@aar'
+
+    // 美洽SDK
+//    implementation 'com.meiqia:meiqiasdk:3.4.8@aar'
+    embed 'com.meiqia:meiqiasdk:3.4.8@aar'
+
+    // linkedme SDK aar
+//    implementation 'cc.linkedme.deeplinks:link-page:1.0.25'
+    embed 'cc.linkedme.deeplinks:link-page:1.0.25'
 
     // 微信SDK jar
 //    api 'com.tencent.mm.opensdk:wechat-sdk-android-without-mta:5.1.4'
-
     embed 'com.tencent.mm.opensdk:wechat-sdk-android-without-mta:5.1.4'
+
 }
