@@ -6,30 +6,29 @@ import com.android.build.gradle.tasks.ManifestProcessorTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.ProjectConfigurationException
-import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.ModuleVersionIdentifier
 import org.gradle.api.artifacts.ResolvedArtifact
 
 /**
- * process multiple aar/jar embed to one aar/jar
+ * Process multiple artifact(aar、jar) merge into one artifact.
  *
  * @author act262@gmail.com
  */
 class EmbedArtifactPlugin implements Plugin<Project> {
 
     private Project project
-    private Configuration embedConf
 
-    def resolvedArtifactSet = new HashSet<ResolvedArtifact>(8)
+    def resolvedAar = new HashSet<ResolvedArtifact>(4)
+    def resolvedJar = new HashSet<ResolvedArtifact>(4)
 
     @Override
     void apply(Project project) {
         if (!project.pluginManager.hasPlugin("com.android.library")) {
-            throw new ProjectConfigurationException("EmbedPlugin must applied in android library project.")
+            throw new ProjectConfigurationException("EmbedArtifactPlugin must applied in android library project.")
         }
 
         this.project = project
-        createEmbedConfiguration(project)
+        createEmbedConfiguration()
 
         project.afterEvaluate {
             resolveArtifact()
@@ -37,16 +36,17 @@ class EmbedArtifactPlugin implements Plugin<Project> {
         }
     }
 
-    private void createEmbedConfiguration(Project project) {
-        embedConf = project.configurations.create('embed')
+    private void createEmbedConfiguration() {
+        def embedConf = project.configurations.create('embed')
         embedConf.visible = false
     }
 
     private Set<ResolvedArtifact> resolveArtifact() {
-        embedConf.resolvedConfiguration.resolvedArtifacts.each { artifact ->
-            if ('aar' == artifact.type || 'jar' == artifact.type) {
-                println "embed -> [${artifact.type}] => ${artifact.moduleVersion.id}"
-                resolvedArtifactSet.add(artifact)
+        project.configurations.embed.resolvedConfiguration.resolvedArtifacts.each { artifact ->
+            if ('aar' == artifact.type) {
+                resolvedAar.add(artifact)
+            } else if ('jar' == artifact.type) {
+                resolvedJar.add(artifact)
             } else {
                 throw new ProjectConfigurationException('Only support embed aar and jar dependencies!', null)
             }
@@ -54,17 +54,21 @@ class EmbedArtifactPlugin implements Plugin<Project> {
     }
 
     private void process() {
-        for (artifact in resolvedArtifactSet) {
-            def file = artifact.file
-            def id = artifact.moduleVersion.id
-            def type = artifact.type
-
-            if ('aar' == type) {
-                embedAar(id, file)
-            } else if ('jar' == type) {
-                embedJar(file)
-            }
+        for (artifact in resolvedAar) {
+            processAar(artifact)
         }
+
+        for (artifact in resolvedJar) {
+            processJar(artifact)
+        }
+    }
+
+    private void processAar(ResolvedArtifact artifact) {
+        embedAar(artifact.moduleVersion.id, artifact.file)
+    }
+
+    private void processJar(ResolvedArtifact artifact) {
+        embedJar(artifact.file)
     }
 
     private void embedAar(ModuleVersionIdentifier id, File file) {
