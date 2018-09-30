@@ -1,6 +1,17 @@
+[![Maven](https://img.shields.io/maven-metadata/v/http/jcenter.bintray.com/com/jfz/plugin/embed-artifact/maven-metadata.xml.svg)](http://jcenter.bintray.com/com/jfz/plugin/embed-artifact/)
+
 ### What
 
 Merge multiple jar/aar file into single jar/aar, so no maven transitive.
+
+
+### Features
+- [x] Support merge multiple aar/jar into one
+- [x] Support merge aar's  AndroidManifest with placeholders
+- [ ] Support merge aar's proguard.txt
+- [ ] Support merge aar's public.txt
+- [ ] Support merge all class with proguard
+
 
 ### Usage
 
@@ -35,7 +46,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'com.jfz.plugin.embed-artifact'
 ```
 
-and dependencies' replace `api`,`implementation` with `embed`
+and dependencies' replace `api`,`implementation` with `embed`  what you want to merge 
 ```groovy
 dependencies {
   
