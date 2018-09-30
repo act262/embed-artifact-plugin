@@ -11,6 +11,13 @@ android {
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
+
+        // here just make it skip merge error
+        manifestPlaceholders = [
+                GETUI_APP_ID    : "stub_value",
+                GETUI_APP_KEY   : "stub_value",
+                GETUI_APP_SECRET: "stub_value"
+        ]
     }
 
     buildTypes {
@@ -22,38 +29,43 @@ android {
 
 }
 
-repositories {
-    // 微博
-    maven { url "https://dl.bintray.com/thelasterstar/maven/" }
+rootProject.subprojects {
+    repositories {
+        // 微博
+        maven { url "https://dl.bintray.com/thelasterstar/maven/" }
 
-    maven {
-        url "http://mvn.gt.igexin.com/nexus/content/repositories/releases/"
-    }
-    maven {
-        url 'https://dl.bintray.com/linkedme2016/lkme-deeplinks'
+        maven {
+            url "http://mvn.gt.igexin.com/nexus/content/repositories/releases/"
+        }
+        maven {
+            url 'https://dl.bintray.com/linkedme2016/lkme-deeplinks'
+        }
     }
 }
 
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.android.support:appcompat-v7:27.0.0'
 
     // 微博SDK aar
 //    api 'com.sina.weibo.sdk:core:4.2.7:openDefaultRelease@aar'
     embed 'com.sina.weibo.sdk:core:4.2.7:openDefaultRelease@aar'
 
-    // 美洽SDK
-//    implementation 'com.meiqia:meiqiasdk:3.4.8@aar'
+    // 美洽SDK（Manifest中包含中文注释）
+    //    implementation 'com.meiqia:meiqiasdk:3.4.8@aar'
     embed 'com.meiqia:meiqiasdk:3.4.8@aar'
 
     // linkedme SDK aar
-//    implementation 'cc.linkedme.deeplinks:link-page:1.0.25'
+    //    implementation 'cc.linkedme.deeplinks:link-page:1.0.25'
     embed 'cc.linkedme.deeplinks:link-page:1.0.25'
 
+    // 个推 (Manifest中包含中文注释、占位符)
+    embed 'com.getui:sdk:2.11.1.0'
+
     // 微信SDK jar
-//    api 'com.tencent.mm.opensdk:wechat-sdk-android-without-mta:5.1.4'
+    //    api 'com.tencent.mm.opensdk:wechat-sdk-android-without-mta:5.1.4'
     embed 'com.tencent.mm.opensdk:wechat-sdk-android-without-mta:5.1.4'
 
+//    embed 'com.android.support:support-v4:27.0.0'
 }

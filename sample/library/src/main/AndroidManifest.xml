@@ -1,2 +1,23 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.jfz.eap.library" />
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.jfz.eap.library">
+
+    <application>
+
+        <!-- here is just override aar's meta-data -->
+        <meta-data
+            android:name="PUSH_APPID"
+            android:value="${GETUI_APP_ID}"
+            tools:replace="android:value" />
+        <meta-data
+            android:name="PUSH_APPKEY"
+            android:value="${GETUI_APP_KEY}"
+            tools:replace="android:value" />
+        <meta-data
+            android:name="PUSH_APPSECRET"
+            android:value="${GETUI_APP_SECRET}"
+            tools:replace="android:value" />
+
+    </application>
+
+</manifest>

@@ -12,6 +12,13 @@ android {
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
+
+        // replace real manifestPlaceholders meta-data
+        manifestPlaceholders = [
+                GETUI_APP_ID    : "aaaaaaaaaaaaaaaaaa",
+                GETUI_APP_KEY   : "bbbbbbbbbbbbbbbbbb",
+                GETUI_APP_SECRET: "cccccccccccccccccc"
+        ]
     }
     buildTypes {
         release {
@@ -21,11 +28,19 @@ android {
     }
 }
 
+repositories {
+    // use final artifact by maven or like this
+    flatDir {
+        dirs "${project(':library').projectDir}/build/outputs/aar"
+    }
+}
+
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'com.android.support:appcompat-v7:27.0.0'
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
 
-    implementation project(':library')
+    implementation(name: 'library-debug', ext: 'aar')
+//    implementation project(':library')
 }
