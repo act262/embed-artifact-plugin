@@ -74,10 +74,13 @@ class EmbedArtifactPlugin implements Plugin<Project> {
     private void embedAar(ModuleVersionIdentifier id, File file) {
         // unzip aar into build/exploded-aar/
         def explodedDir = new File(project.buildDir, "exploded-aar/${id.group}/${id.name}/${id.version}")
+        // rename xxx.aar to xxx.jar
+        def newName = "${file.name.replace(".aar", ".jar")}"
+
         project.copy {
             from project.zipTree(file)
             into explodedDir
-            rename('classes.jar', "${file.name}.jar")
+            rename('classes.jar', newName)
         }
 
         // sourceSet
@@ -89,7 +92,7 @@ class EmbedArtifactPlugin implements Plugin<Project> {
         }
 
         project.dependencies.add('implementation',
-                project.files("$explodedDir/${file.name}.jar"))
+                project.files("$explodedDir/$newName"))
         project.dependencies.add('implementation',
                 project.fileTree("$explodedDir/libs"))
 
