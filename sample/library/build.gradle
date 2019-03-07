@@ -22,8 +22,13 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            consumerProguardFiles 'proguard-rules.pro','/Users/zhangchaoxian/repo/embed-artifact-plugin/sample/library/build/exploded-aar/com.getui/sdk/2.11.1.0/proguard.txt'
+        }
+        debug {
+            initWith(release)
+            minifyEnabled false
         }
     }
 

@@ -8,7 +8,7 @@ Merge multiple jar/aar file into single jar/aar, so no maven transitive.
 ### Features
 - [x] Support merge multiple aar/jar into one
 - [x] Support merge aar's  AndroidManifest with placeholders
-- [ ] Support merge aar's proguard.txt
+- [x] Support merge aar's proguard.txt
 - [ ] Support merge aar's public.txt
 - [ ] Support merge all class with proguard
 

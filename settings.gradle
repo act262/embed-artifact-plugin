@@ -10,3 +10,5 @@
 rootProject.name = 'embed-artifact-plugin'
 
 include ':plugin'
+
+//includeBuild('sample')

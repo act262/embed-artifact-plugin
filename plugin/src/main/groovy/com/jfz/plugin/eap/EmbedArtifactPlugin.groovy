@@ -1,6 +1,8 @@
 package com.jfz.plugin.eap
 
+import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.api.LibraryVariant
+import com.android.build.gradle.internal.dsl.BuildType
 import com.android.build.gradle.tasks.InvokeManifestMerger
 import com.android.build.gradle.tasks.ManifestProcessorTask
 import org.gradle.api.Plugin
@@ -113,6 +115,12 @@ class EmbedArtifactPlugin implements Plugin<Project> {
                 }
             }
             processManifestTask.finalizedBy manifestsMergeTask
+        }
+
+        project.android.buildTypes.each { BuildType buildType ->
+            // contains library proguard.txt
+            buildType.consumerProguardFiles("$explodedDir/proguard.txt")
+            buildType.proguardFiles("$explodedDir/proguard.txt")
         }
     }
 
