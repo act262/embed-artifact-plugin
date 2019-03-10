@@ -1,3 +1,5 @@
+import com.android.builder.model.Version
+
 apply plugin: 'com.android.library'
 
 // apply embed plugin
