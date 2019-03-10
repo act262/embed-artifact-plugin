@@ -1,4 +1,4 @@
-package com.jfz.plugin.eap
+package io.zcx.plugin
 
 import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.api.LibraryVariant

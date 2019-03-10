@@ -1,7 +1,7 @@
 apply plugin: 'com.android.library'
 
 // apply embed plugin
-apply plugin: 'com.jfz.plugin.embed-artifact'
+apply plugin: 'io.zcx.plugin.embed-artifact'
 
 android {
     compileSdkVersion 28
@@ -24,7 +24,7 @@ android {
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            consumerProguardFiles 'proguard-rules.pro','/Users/zhangchaoxian/repo/embed-artifact-plugin/sample/library/build/exploded-aar/com.getui/sdk/2.11.1.0/proguard.txt'
+            consumerProguardFiles 'my-proguard.txt'
         }
         debug {
             initWith(release)

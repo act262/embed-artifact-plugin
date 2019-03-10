@@ -7,7 +7,7 @@ apply plugin: 'kotlin-android-extensions'
 android {
     compileSdkVersion 28
     defaultConfig {
-        applicationId "com.jfz.eap.sample"
+        applicationId "io.zcx.plugin.eap.sample"
         minSdkVersion 17
         targetSdkVersion 28
         versionCode 1
