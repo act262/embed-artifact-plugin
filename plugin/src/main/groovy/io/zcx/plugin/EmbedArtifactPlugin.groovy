@@ -6,6 +6,7 @@ import com.android.build.gradle.internal.dsl.BuildType
 import com.android.build.gradle.tasks.InvokeManifestMerger
 import com.android.build.gradle.tasks.ManifestProcessorTask
 import com.android.builder.model.Version
+import org.gradle.api.GradleException
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.ProjectConfigurationException
@@ -105,15 +106,15 @@ class EmbedArtifactPlugin implements Plugin<Project> {
             ManifestProcessorTask processManifestTask = project.tasks["process${variantName}Manifest"]
             def mainManifestFile
 
-            def versionNumber = VersionNumber.parse(Version.ANDROID_GRADLE_PLUGIN_VERSION)
-            def ver_3_3_0 = VersionNumber.parse('3.3.0')
-            if (versionNumber >= ver_3_3_0) {
-                mainManifestFile = processManifestTask.manifestOutputFile.get().getAsFile() // Provider<RegularFile>
-            }else {
-                // 3.1.0 ~ 3.2.x
-                mainManifestFile = new File(processManifestTask.manifestOutputDirectory,'AndroidManifest.xml') // File
+            if (Versions.AGP_CURRENT >= Versions.AGP_3_3_0) {
+                mainManifestFile = processManifestTask.manifestOutputFile.get().getAsFile()
+                // Provider<RegularFile>
+            } else if (Versions.AGP_CURRENT >= Versions.AGP_3_0_0) {
+                // old ~ 3.2.x                // File
+                mainManifestFile = new File(processManifestTask.manifestOutputDirectory, 'AndroidManifest.xml')
+            } else {
+                throw new GradleException("Not support lower AGP, current " + Versions.AGP_CURRENT)
             }
-
 
             def secondaryManifestFiles = Collections.singletonList(project.file("$explodedDir/AndroidManifest.xml"))
 
