@@ -1,4 +1,4 @@
-[![Maven](https://img.shields.io/maven-metadata/v/http/jcenter.bintray.com/com/jfz/plugin/embed-artifact/maven-metadata.xml.svg)](http://jcenter.bintray.com/com/jfz/plugin/embed-artifact/)
+[ ![Download](https://api.bintray.com/packages/act262/maven/embed-artifacts/images/download.svg) ](https://bintray.com/act262/maven/embed-artifacts/_latestVersion)
 
 ### What
 
@@ -31,7 +31,7 @@ buildscript {
         classpath 'com.android.tools.build:gradle:3.1.4'
       
         // Add here
-        classpath 'com.jfz.plugin:embed-artifact:<latest-version>'
+        classpath 'io.zcx.plugin:embed-artifacts:<latest-version>'
     }
 }
 
@@ -43,7 +43,7 @@ library's `build.gradle`
 apply plugin: 'com.android.library'
 
 // apply embed plugin
-apply plugin: 'com.jfz.plugin.embed-artifact'
+apply plugin: 'io.zcx.plugin.embed-artifacts'
 ```
 
 and dependencies' replace `api`,`implementation` with `embed`  what you want to merge 

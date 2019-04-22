@@ -1,9 +1,7 @@
-import com.android.builder.model.Version
-
 apply plugin: 'com.android.library'
 
 // apply embed plugin
-apply plugin: 'io.zcx.plugin.embed-artifact'
+apply plugin: 'io.zcx.plugin.embed-artifacts'
 
 android {
     compileSdkVersion 28
